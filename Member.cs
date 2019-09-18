@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace bamboohr_jobtest
 {
@@ -45,6 +46,29 @@ namespace bamboohr_jobtest
             Seniority = member.Seniority;
             Boss = member.Boss;
             Subordinates = new List<Member>(member.Subordinates);
+        }
+
+        public bool Equals(Member otherMember)
+        {
+            if(!Name.Equals(otherMember.Name)) return false;
+            else if(!Seniority.Equals(otherMember.Seniority)) return false;
+            else if(!Boss.Name.Equals(otherMember.Boss.Name)) return false;
+
+            foreach(Member subordinate in Subordinates)
+            {
+                if(otherMember.Subordinates.Select(x => x.Name).Contains(subordinate.Name)) return false;
+            }
+            return true;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+
+            Member otherMember = obj as Member;
+            return Equals(otherMember);
         }
     }
 }
