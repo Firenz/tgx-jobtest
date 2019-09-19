@@ -20,13 +20,14 @@ namespace bamboohr_jobtest
             CurrentMembers.AddRange(criminalOrganization.CurrentMembers);
         }
 
-        public void AddOrUpdateMember(string name, int seniority, string bossName, string[] subordinateNames)
+        public void AddMember(string name, int seniority, string bossName)
         {
             
             Member newMember = FindMemberByName(name);
             if(newMember == null)
             {
                 newMember = new Member(name, seniority);
+                CurrentMembers.Add(newMember);
             }
             else
             {
@@ -36,24 +37,15 @@ namespace bamboohr_jobtest
             if(!bossName.Equals(String.Empty))
             {
                 Member newMemberBoss = FindMemberByName(bossName);
+                
                 if(newMemberBoss == null)
                 {
                     newMemberBoss = new Member(bossName);
+                    CurrentMembers.Add(newMemberBoss);
                 }
-            }
-            
-            if(subordinateNames != null && subordinateNames.Length > 0)
-            {
-                foreach(string newSubordinateName in subordinateNames)
-                {
-                    Member newSubordinate = FindMemberByName(newSubordinateName);
-                    if(newSubordinate == null)
-                    {
-                        newSubordinate = new Member(newSubordinateName);
-                    }
 
-                    newMember.Subordinates.Add(newSubordinate);
-                }
+                newMember.Boss = newMemberBoss;
+                newMemberBoss.Subordinates.Add(newMember);
             }
         }
 
@@ -177,7 +169,7 @@ namespace bamboohr_jobtest
         public void PrintHierarchy()
         {
             Member highestBoss = FindHighestBoss();
-            PrintHierarchyRecursive(highestBoss, "", HasSubordinates(highestBoss));
+            PrintHierarchyRecursive(highestBoss, "\n", HasSubordinates(highestBoss));
         }
 
         private void PrintHierarchyRecursive(Member member, string indent, bool hasSubordinates)
@@ -191,6 +183,11 @@ namespace bamboohr_jobtest
             }
         }
 
+        public void PrintBossHierarchyOfMember(string memberName)
+        {
+            PrintBossHierarchyOfMember(FindMemberByName(memberName));
+        }
+
         public void PrintBossHierarchyOfMember(Member member)
         {
             if(member == null) return;
@@ -200,7 +197,7 @@ namespace bamboohr_jobtest
             {
                 hierarchyArrow = String.Empty;
             }
-            Console.WriteLine(member.Name + hierarchyArrow);
+            Console.Write(member.Name + hierarchyArrow);
 
             PrintBossHierarchyOfMember(member.Boss);
         }
