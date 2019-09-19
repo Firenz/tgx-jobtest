@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace bamboohr_jobtest
 {
@@ -14,14 +15,18 @@ namespace bamboohr_jobtest
             ArrestedMembers = new List<Member>();
         }
 
-        public void Enter(string memberName, ref List<Member> criminalOrganization)
+        public void Enter(string memberName, ref CriminalOrganization criminalOrganization)
         {
-            //...
+            Member enteringMember = criminalOrganization.FindMemberByName(memberName);
+            criminalOrganization.RemoveMember(enteringMember);
+            ArrestedMembers.Add(enteringMember);
         }
 
-        public void Exit(string memberName, ref List<Member> criminalOrganization)
+        public void Exit(string memberName, ref CriminalOrganization criminalOrganization)
         {
-            //...
+            Member exitingMember = criminalOrganization.FindMemberByName(memberName);
+            arrestedMembers.Remove(exitingMember);
+            criminalOrganization.ReturnMember(exitingMember);
         }
     }
 }
