@@ -88,5 +88,10 @@ namespace bamboohr_jobtest
             Member otherMember = obj as Member;
             return Equals(otherMember);
         }
+
+        public override int GetHashCode()
+        {
+            return HashCode.Combine(name, seniority, boss, subordinates, Name, Seniority, Boss, Subordinates);
+        }
     }
 }
