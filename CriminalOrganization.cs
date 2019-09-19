@@ -20,7 +20,7 @@ namespace bamboohr_jobtest
             CurrentMembers.AddRange(criminalOrganization.CurrentMembers);
         }
 
-        private void AddOrUpdateMember(string name, int seniority, string bossName, string[] subordinateNames)
+        public void AddOrUpdateMember(string name, int seniority, string bossName, string[] subordinateNames)
         {
             
             Member newMember = FindMemberByName(name);

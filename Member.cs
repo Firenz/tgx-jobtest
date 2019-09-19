@@ -52,12 +52,12 @@ namespace bamboohr_jobtest
         {
             Member prevBoss = Boss;
 
-            if(!prevBoss.Equals(null))
+            if(prevBoss != null)
             {
                 prevBoss.Subordinates.Remove(this);
             }
 
-            if(!newBoss.Equals(null))
+            if(newBoss != null)
             {
                 newBoss.Subordinates.Add(this);
             }
@@ -67,6 +67,7 @@ namespace bamboohr_jobtest
 
         public bool Equals(Member otherMember)
         {
+            if(otherMember == null) return false;
             if(!Name.Equals(otherMember.Name)) return false;
             else if(!Seniority.Equals(otherMember.Seniority)) return false;
             else if(!Boss.Name.Equals(otherMember.Boss.Name)) return false;
