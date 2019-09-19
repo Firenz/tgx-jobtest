@@ -93,5 +93,20 @@ namespace bamboohr_jobtest
         {
             return HashCode.Combine(name, seniority, boss, subordinates, Name, Seniority, Boss, Subordinates);
         }
+
+        public override string ToString()
+        {
+            string memberString = "Name: " + Name + "\nSeniority: " + Seniority + "\nBoss: ";
+            if(Boss != null) memberString += Boss.Name;
+            if(Subordinates.Count > 0){
+                memberString += "\nSubordinates: ";
+                foreach(Member subordinate in Subordinates)
+                {
+                    memberString += subordinate.Name + " ";
+                }
+            } 
+            memberString += "\n--------------";
+            return memberString;
+        }
     }
 }
