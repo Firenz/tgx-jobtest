@@ -36,17 +36,17 @@ namespace bamboohr_jobtest
             }
             else
             {
-                if(exitingMember.Subordinates.Count > 0)
+                if(HasSubordinates(exitingMember))
                 {
                     Member equalSeniorityMember = FindFirstMemberWithEqualSeniority(exitingMember);
                     if(!equalSeniorityMember.Equals(null))
                     {
                         newBoss = equalSeniorityMember;
-                        newBoss.Boss = exitingMember.Boss;
                     }
                     else
                     {
                         newBoss = PromoteSubordinate(exitingMember);
+                        newBoss.Boss = exitingMember.Boss;
                     }
                 }              
             }
@@ -55,8 +55,7 @@ namespace bamboohr_jobtest
             {
                 if(!subordinate.Equals(newBoss))
                 {
-                    subordinate.Boss = newBoss;
-                    newBoss.Subordinates.Add(subordinate);
+                    subordinate.ChangeBoss(newBoss);
                 }
             }
         }
@@ -68,23 +67,14 @@ namespace bamboohr_jobtest
 
         public void ReturnMember(Member returningMember)
         {
-            if(IsHighestBoss(returningMember))
+            foreach(Member subordinate in returningMember.Subordinates)
             {
-                Member exBoss = CurrentMembers.FirstOrDefault(x => x.Boss.Equals(null));
-                RemoveDuplicatedSubordinates(exBoss, returningMember.Subordinates);
-                exBoss.Boss = returningMember;
-                
-                foreach(Member subordinate in returningMember.Subordinates.FindAll(x => !x.Equals(exBoss)))
-                {
-                    subordinate.Boss = returningMember;
-                }
+                subordinate.ChangeBoss(returningMember);
             }
-            else{
-                foreach(Member subordinate in returningMember.Subordinates)
-                {
-                    subordinate.Boss.Subordinates.Remove(subordinate);
-                    subordinate.Boss = returningMember;
-                }
+            
+            if(!returningMember.Boss.Equals(null))
+            {
+                returningMember.Boss.Subordinates.Add(returningMember);
             }
 
             CurrentMembers.Add(returningMember);
@@ -132,12 +122,39 @@ namespace bamboohr_jobtest
             return CurrentMembers.FirstOrDefault(x => x.Name.Equals(memberName));
         }
 
+        public Member FindHighestBoss()
+        {
+            return CurrentMembers.FirstOrDefault(x => IsHighestBoss(x));
+        }
+
         public bool IsHighestBoss(Member member)
         {
             return member.Boss.Equals(null);
         }
 
-        public void PrintHierarchyOfMember(Member member)
+        public bool HasSubordinates(Member member)
+        {
+            return member.Subordinates.Count > 0;
+        }
+
+        public void PrintHierarchy()
+        {
+            Member highestBoss = FindHighestBoss();
+            PrintHierarchyRecursive(highestBoss, "", HasSubordinates(highestBoss));
+        }
+
+        private void PrintHierarchyRecursive(Member member, string indent, bool hasSubordinates)
+        {
+            Console.Write(indent + "+- " + member.Name);
+            indent += !hasSubordinates ? "   " : "|  ";
+
+            for(int i = 0; i < member.Subordinates.Count; i++)
+            {
+                PrintHierarchyRecursive(member.Subordinates[i], indent, HasSubordinates(member.Subordinates[i]));
+            }
+        }
+
+        public void PrintBossHierarchyOfMember(Member member)
         {
             if(member.Equals(null)) return;
 
@@ -148,7 +165,12 @@ namespace bamboohr_jobtest
             }
             Console.WriteLine(member.Name + hierarchyArrow);
 
-            PrintHierarchyOfMember(member.Boss);
+            PrintBossHierarchyOfMember(member.Boss);
+        }
+
+        public void PrintHighestBoss()
+        {
+            Console.WriteLine("Highest Boss: " + FindHighestBoss().Name);
         }
     }
 }
