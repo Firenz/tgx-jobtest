@@ -20,6 +20,43 @@ namespace bamboohr_jobtest
             CurrentMembers.AddRange(criminalOrganization.CurrentMembers);
         }
 
+        private void AddOrUpdateMember(string name, int seniority, string bossName, string[] subordinateNames)
+        {
+            
+            Member newMember = FindMemberByName(name);
+            if(newMember == null)
+            {
+                newMember = new Member(name, seniority);
+            }
+            else
+            {
+                newMember.Seniority = seniority;
+            }
+            
+            if(!bossName.Equals(String.Empty))
+            {
+                Member newMemberBoss = FindMemberByName(bossName);
+                if(newMemberBoss == null)
+                {
+                    newMemberBoss = new Member(bossName);
+                }
+            }
+            
+            if(subordinateNames != null && subordinateNames.Length > 0)
+            {
+                foreach(string newSubordinateName in subordinateNames)
+                {
+                    Member newSubordinate = FindMemberByName(newSubordinateName);
+                    if(newSubordinate == null)
+                    {
+                        newSubordinate = new Member(newSubordinateName);
+                    }
+
+                    newMember.Subordinates.Add(newSubordinate);
+                }
+            }
+        }
+
         public void RemoveMember(string exitingMemberName)
         {
             RemoveMember(FindMemberByName(exitingMemberName));
@@ -39,7 +76,7 @@ namespace bamboohr_jobtest
                 if(HasSubordinates(exitingMember))
                 {
                     Member equalSeniorityMember = FindFirstMemberWithEqualSeniority(exitingMember);
-                    if(!equalSeniorityMember.Equals(null))
+                    if(equalSeniorityMember != null)
                     {
                         newBoss = equalSeniorityMember;
                     }
@@ -72,7 +109,7 @@ namespace bamboohr_jobtest
                 subordinate.ChangeBoss(returningMember);
             }
             
-            if(!returningMember.Boss.Equals(null))
+            if(returningMember.Boss != null)
             {
                 returningMember.Boss.Subordinates.Add(returningMember);
             }
@@ -129,7 +166,7 @@ namespace bamboohr_jobtest
 
         public bool IsHighestBoss(Member member)
         {
-            return member.Boss.Equals(null);
+            return member.Boss == null;
         }
 
         public bool HasSubordinates(Member member)
@@ -156,10 +193,10 @@ namespace bamboohr_jobtest
 
         public void PrintBossHierarchyOfMember(Member member)
         {
-            if(member.Equals(null)) return;
+            if(member == null) return;
 
             string hierarchyArrow = " --> ";
-            if(member.Boss.Equals(null))
+            if(member.Boss == null)
             {
                 hierarchyArrow = String.Empty;
             }
