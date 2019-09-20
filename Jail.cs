@@ -17,16 +17,20 @@ namespace bamboohr_jobtest
 
         public void Enter(string memberName, ref CriminalOrganization criminalOrganization)
         {
-            Member enteringMember = criminalOrganization.FindMemberByName(memberName);
-            criminalOrganization.RemoveMember(enteringMember);
+            Member enteringMember = criminalOrganization.RemoveMember(memberName);
             ArrestedMembers.Add(enteringMember);
         }
 
         public void Exit(string memberName, ref CriminalOrganization criminalOrganization)
         {
-            Member exitingMember = criminalOrganization.FindMemberByName(memberName);
-            arrestedMembers.Remove(exitingMember);
+            Member exitingMember = FindArrestedMemberByName(memberName);
             criminalOrganization.ReturnMember(exitingMember);
+            ArrestedMembers.Remove(exitingMember);
+        }
+
+        public Member FindArrestedMemberByName(string name)
+        {
+            return ArrestedMembers.FirstOrDefault(x => x.Name.Equals(name));
         }
     }
 }
