@@ -48,13 +48,15 @@ namespace bamboohr_jobtest
             }
         }
 
-        public void RemoveMember(string exitingMemberName)
+        public Member RemoveMember(string exitingMemberName)
         {
-            RemoveMember(FindMemberByName(exitingMemberName));
+            return RemoveMember(FindMemberByName(exitingMemberName));
         }
 
-        public void RemoveMember(Member exitingMember)
+        public Member RemoveMember(Member exitingMember)
         {
+            if(exitingMember == null) return null;
+
             Member newBoss = null;
 
             if(exitingMember.Boss != null)
@@ -136,25 +138,45 @@ namespace bamboohr_jobtest
             }
 
             CurrentMembers.Remove(exitingMember);
-        }
-
-        public void ReturnMember(string returningMemberName)
-        {
-            ReturnMember(FindMemberByName(returningMemberName));
+            return exitingMember;
         }
 
         public void ReturnMember(Member returningMember)
         {
-            foreach(Member subordinate in returningMember.Subordinates)
+            if(returningMember == null) return;
+
+            if(returningMember.Subordinates.Count > 0)
             {
-                subordinate.ChangeBoss(returningMember);
+                List<Member> subordinateInJail = new List<Member>();
+                foreach(Member subordinate in returningMember.Subordinates)
+                {
+                    if(CurrentMembers.Contains(subordinate))
+                    {
+                        Member previousBoss = subordinate.Boss;
+                        if(previousBoss != null)
+                        {
+                            previousBoss.Subordinates.Remove(subordinate);
+                        }
+                        
+                        subordinate.Boss = returningMember;
+                    }
+                    else
+                    {
+                        subordinateInJail.Add(subordinate);
+                    }
+                }
+
+                foreach(Member subordinate in subordinateInJail)
+                {
+                    returningMember.Subordinates.Remove(subordinate);
+                }
             }
-            
+
             if(returningMember.Boss != null)
             {
                 returningMember.Boss.Subordinates.Add(returningMember);
             }
-
+            
             CurrentMembers.Add(returningMember);
         }
 
@@ -253,7 +275,7 @@ namespace bamboohr_jobtest
 
         public void PrintHighestBoss()
         {
-            Console.WriteLine("Highest Boss: " + FindHighestBoss().Name);
+            Console.WriteLine("\n\nHighest Boss: " + FindHighestBoss().Name);
         }
     }
 }
