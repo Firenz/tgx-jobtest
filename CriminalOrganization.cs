@@ -61,23 +61,11 @@ namespace bamboohr_jobtest
 
             if(exitingMember.Boss != null)
             {
-                Member exitingMemberBoss = exitingMember.Boss;
-                List<Member> exitingMemberSubordinates = exitingMember.Subordinates;
-                List<Member> exitingMemberBossSubordinates = exitingMemberBoss.Subordinates;
+                exitingMember.Boss.Subordinates.Remove(exitingMember);
 
-                exitingMemberBoss.Subordinates.Remove(exitingMember);
-
-                if(exitingMemberBossSubordinates.Count > 0)
+                if(exitingMember.Boss.Subordinates.Count > 0)
                 {
-                    int maxSeniority = 0;
-                    for(int i = 0; i < exitingMemberBossSubordinates.Count; i++)
-                    {
-                        if(exitingMemberBossSubordinates[i].Seniority > maxSeniority)
-                        {
-                            newBoss = exitingMemberBossSubordinates[i];
-                            maxSeniority = exitingMemberBossSubordinates[i].Seniority;
-                        }
-                    }
+                    newBoss = PromoteSubordinate(exitingMember.Boss);
 
                     foreach(Member subordinate in exitingMember.Subordinates)
                     {
@@ -85,60 +73,35 @@ namespace bamboohr_jobtest
                         newBoss.Subordinates.Add(subordinate);
                     } 
                 }
-                else if(exitingMemberSubordinates.Count > 0)
+                else if(exitingMember.Subordinates.Count > 0)
                 {
-                    int maxSeniority = 0;
-                    for(int i = 0; i < exitingMemberSubordinates.Count; i++)
-                    {
-                        if(exitingMemberSubordinates[i].Seniority > maxSeniority)
-                        {
-                            newBoss = exitingMemberSubordinates[i];
-                            newBoss.Boss = exitingMemberSubordinates[i].Boss;
-                            maxSeniority = exitingMemberSubordinates[i].Seniority;
-                        }
-                    }
-
+                    newBoss = PromoteSubordinate(exitingMember);
                     newBoss.Boss = exitingMember.Boss;
                     exitingMember.Boss.Subordinates.Add(newBoss);
-
-                    foreach(Member subordinate in exitingMember.Subordinates)
-                    {
-                        if(subordinate.Name != newBoss.Name)
-                        {
-                            subordinate.Boss = newBoss;
-                            newBoss.Subordinates.Add(subordinate);
-                        }
-                    }
+                    UpdateBossSubordinates(exitingMember.Subordinates, newBoss);
                 }
             }
-            else{
-                List<Member> exitingMemberSubordinates = exitingMember.Subordinates;
-
-                int maxSeniority = 0;
-                for(int i = 0; i < exitingMemberSubordinates.Count; i++)
-                {
-                    if(exitingMemberSubordinates[i].Seniority > maxSeniority)
-                    {
-                        newBoss = exitingMemberSubordinates[i];
-                        newBoss.Boss = exitingMemberSubordinates[i].Boss;
-                        maxSeniority = exitingMemberSubordinates[i].Seniority;
-                    }
-                }
-
+            else
+            {
+                newBoss = PromoteSubordinate(exitingMember);
                 newBoss.Boss = null;
-
-                foreach(Member subordinate in exitingMember.Subordinates)
-                {
-                    if(subordinate.Name != newBoss.Name)
-                    {
-                        subordinate.Boss = newBoss;
-                        newBoss.Subordinates.Add(subordinate);
-                    }
-                }
+                UpdateBossSubordinates(exitingMember.Subordinates, newBoss);
             }
 
             CurrentMembers.Remove(exitingMember);
             return exitingMember;
+        }
+
+        private void UpdateBossSubordinates(List<Member> subordinates, Member newBoss)
+        {
+            foreach (Member subordinate in subordinates)
+            {
+                if (subordinate.Name != newBoss.Name)
+                {
+                    subordinate.Boss = newBoss;
+                    newBoss.Subordinates.Add(subordinate);
+                }
+            }
         }
 
         public void ReturnMember(Member returningMember)
@@ -180,31 +143,20 @@ namespace bamboohr_jobtest
             CurrentMembers.Add(returningMember);
         }
 
-        private Member PromoteSubordinate(Member exBoss){
+        private Member PromoteSubordinate(Member member){
             Member promotedSubordinate = null;
 
             int maxSeniority = 0;
-            for(int i = 0; i < exBoss.Subordinates.Count; i++)
+            for(int i = 0; i < member.Subordinates.Count; i++)
             {
-                if(maxSeniority < exBoss.Subordinates[i].Seniority)
+                if(maxSeniority < member.Subordinates[i].Seniority)
                 {
-                    maxSeniority = exBoss.Subordinates[i].Seniority;
-                    promotedSubordinate = exBoss.Subordinates[i];
+                    maxSeniority = member.Subordinates[i].Seniority;
+                    promotedSubordinate = member.Subordinates[i];
                 }
             }
 
             return promotedSubordinate;
-        }
-
-        private void RemoveDuplicatedSubordinates(Member member, List<Member> duplicatedSubordinates)
-        {
-            foreach(Member duplicatedSubordinate in duplicatedSubordinates)
-            {
-                if(member.Subordinates.Contains(duplicatedSubordinate))
-                {
-                    member.Subordinates.Remove(duplicatedSubordinate);
-                }
-            }
         }
 
         private List<Member> FindMembersWithEqualSeniority(Member member)
@@ -263,11 +215,7 @@ namespace bamboohr_jobtest
         {
             if(member == null) return;
 
-            string hierarchyArrow = " --> ";
-            if(member.Boss == null)
-            {
-                hierarchyArrow = String.Empty;
-            }
+            string hierarchyArrow = member.Boss == null ? String.Empty : " --> ";
             Console.Write(member.Name + hierarchyArrow);
 
             PrintBossHierarchyOfMember(member.Boss);
