@@ -41,23 +41,6 @@ namespace bamboohr_jobtest
             Subordinates = new List<Member>(member.Subordinates);
         }
 
-        public void ChangeBoss(Member newBoss)
-        {
-            Member prevBoss = Boss;
-
-            if(prevBoss != null)
-            {
-                prevBoss.Subordinates.Remove(this);
-            }
-
-            if(newBoss != null)
-            {
-                newBoss.Subordinates.Add(this);
-            }
-
-            Boss = newBoss;
-        }
-
         public bool Equals(Member otherMember)
         {
             if(otherMember == null) return false;
