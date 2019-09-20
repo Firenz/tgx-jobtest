@@ -1,11 +1,15 @@
 # Programming test for BambooHR
-This is a programming test for a Junior Backend position in C# for BambooHR.
+This is a programming test for a Junior Backend position coded in C# for BambooHR.
 
-The code is mostly written in C#, since it is the coding language which I am more comfortable.
+## Development environment
+- Language: C# with .NET 2.2 & Json.NET library
+- OS: Ubuntu 18.04
+- IDE: Visual Studio Code
+- Git IDEs: Visual Studio Code (integrated Git) & GitKraken
 
+## Description
 The problem to solve how it follows (in Spanish, TODO translating it to English):
 
->## Descripción del problema
 >El FBI a capturado algunos informes sobre la Mafia que datan desde 1985 hasta día de hoy. Quieren usar estos datos para poder mapear la organización de la mafia y así poner todos los recursos sobre los miembros mas importantes. Tenemos que seguir de cerca quien reporta a quien en la organización ya que el jefe tiene a mas de 50 personas a su cargo.
 >
 >Durante estos años ha habido reestructuraciones, asesinatos y encarcelamientos. Basándonos en investigaciones anteriores, sabemos como funciona la mafia cuando ocurre uno de estos eventos:
@@ -43,4 +47,3 @@ The problem to solve how it follows (in Spanish, TODO translating it to English)
 > - Se debe de sacar un nuevo jefe de los subordinados y reubicar estos en el nuevo jefe
 > - Se debe liberar de la cárcel al jefe de la banda
 > - Se debe reubicar sus subordinados que tenía antes de entrar en la carcel
-
