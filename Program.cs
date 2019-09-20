@@ -9,10 +9,37 @@ namespace bamboohr_jobtest
 
         static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!\n");
             Jail jail = new Jail();
             CriminalOrganization criminalOrganization = LoadCriminalOrganizationDataJSON(@"data/datos.json");
             criminalOrganization.PrintHierarchy();
+            
+            jail.Enter("Jhon", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            jail.Exit("Jhon", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            jail.Enter("Pascual", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            jail.Exit("Pascual", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            jail.Enter("Andy", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            jail.Exit("Andy", ref criminalOrganization);
+            Console.WriteLine();
+            criminalOrganization.PrintHierarchy();
+
+            criminalOrganization.PrintHighestBoss();
+
+            Console.WriteLine();
         }
 
         public static CriminalOrganization LoadCriminalOrganizationDataJSON(string filePath)
