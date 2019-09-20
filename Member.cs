@@ -24,20 +24,13 @@ namespace bamboohr_jobtest
             Subordinates = new List<Member>();
         }
 
-        public Member(string _name, int _seniority = 0, Member _boss = null, List<Member> _subordinates = null)
+        public Member(string _name, int _seniority = 0, Member _boss = null)
         {
             Name = _name;
             Seniority = _seniority;
             Boss = _boss;
 
-            if(_subordinates != null)
-            {
-                Subordinates = new List<Member>(_subordinates);
-            }
-            else 
-            {
-                Subordinates = new List<Member>();
-            }
+            Subordinates = new List<Member>();
         }
 
         public Member(Member member)
@@ -69,13 +62,6 @@ namespace bamboohr_jobtest
         {
             if(otherMember == null) return false;
             if(!Name.Equals(otherMember.Name)) return false;
-            else if(!Seniority.Equals(otherMember.Seniority)) return false;
-            else if(!Boss.Name.Equals(otherMember.Boss.Name)) return false;
-
-            foreach(Member subordinate in Subordinates)
-            {
-                if(otherMember.Subordinates.Select(x => x.Name).Contains(subordinate.Name)) return false;
-            }
             return true;
         }
 
