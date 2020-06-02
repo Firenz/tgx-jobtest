@@ -1,5 +1,5 @@
 # Programming test for TravelgateX
-This is a programming test for a Junior Backend position coded in C# for BambooHR.
+This is a programming test for a Junior Backend position coded in C# for TravelgateX.
 
 ## Development environment
 - Language: C# with .NET 2.2 & Json.NET library
