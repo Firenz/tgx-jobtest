@@ -1,4 +1,4 @@
-# Programming test for BambooHR
+# Programming test for TravelgateX
 This is a programming test for a Junior Backend position coded in C# for BambooHR.
 
 ## Development environment
